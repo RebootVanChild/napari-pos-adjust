@@ -44,7 +44,7 @@ class ExampleQWidget(QWidget):
         print("test")
         print("layer translate:", self.viewer.layers["0"].translate)
         translate_val = self.viewer.layers["0"].translate
-        translate_val[2] += 1
+        translate_val[2] = 1000
         self.viewer.layers["0"].translate = translate_val
 
     def value_changed(self):
