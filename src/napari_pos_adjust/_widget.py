@@ -52,7 +52,7 @@ class Widget(QWidget):
         layout.addRow("translate x:", self.sl_translate_x)
         layout.addRow("translate y:", self.sl_translate_y)
         layout.addRow("translate z:", self.sl_translate_z)
-        self.setLayout(QFormLayout())
+        self.setLayout(layout)
         # self.layout().addWidget(self.btn)
         # self.layout().addWidget(self.sl_translate_x)
         # self.layout().addWidget(self.sl_translate_y)
