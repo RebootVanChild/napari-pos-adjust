@@ -161,6 +161,8 @@ class Widget(QWidget):
                 ]
             )
         )
+        print(translate_arr)
+        print(np.hstack((rot_mat, translate_arr)))
         self.affine_matrix = np.append(
             np.hstack((rot_mat, translate_arr)), [[0, 0, 0, 1]], axis=0
         )
