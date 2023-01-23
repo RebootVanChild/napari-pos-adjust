@@ -100,7 +100,7 @@ class Widget(QWidget):
     def translate_x_value_changed(self):
         self.affine_matrix[2][3] = self.sl_translate_x.value()
         self.viewer.layers["0"].affine = self.affine_matrix
-        print(self.viewer.layers["0"].metadata)
+        print(self.viewer.layers["0"].sizes["x"])
 
     def translate_y_value_changed(self):
         self.affine_matrix[1][3] = self.sl_translate_y.value()
