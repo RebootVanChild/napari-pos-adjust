@@ -152,10 +152,10 @@ class Widget(QWidget):
         rot_mat = rot_mat_x.dot(rot_mat_y).dot(rot_mat_z)
         translate_arr = (
             -rot_mat.dot(self.image_center.T)
-            + self.image_center.T
+            + self.image_center
             + np.array(
                 [self.translation_z, self.translation_y, self.translation_x]
-            ).T
+            )
         )
         self.affine_matrix = np.append(
             np.hstack((rot_mat, translate_arr[..., None])),
