@@ -30,9 +30,9 @@ class ExampleQWidget(QWidget):
 
         self.btn.clicked.connect(self._on_click)
         self.sl_translate_x = QSlider(Qt.Horizontal)
-        self.sl_translate_x.setMinimum(10)
-        self.sl_translate_x.setMaximum(30)
-        self.sl_translate_x.setValue(20)
+        self.sl_translate_x.setMinimum(-100)
+        self.sl_translate_x.setMaximum(100)
+        self.sl_translate_x.setValue(0)
         self.sl_translate_x.valueChanged.connect(self.value_changed)
 
         self.setLayout(QHBoxLayout())
@@ -49,7 +49,7 @@ class ExampleQWidget(QWidget):
 
     def value_changed(self):
         print("value changed", self.sl_translate_x.value())
-        self.viewer.layers["0"].translate[0] = self.sl_translate_x.value()
+        self.viewer.layers["0"].translate[2] = self.sl_translate_x.value()
         # if self.timer_id != -1:
         #     self.killTimer(self.timer_id)
         #
