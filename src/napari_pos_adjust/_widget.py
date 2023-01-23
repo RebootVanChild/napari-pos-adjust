@@ -101,7 +101,8 @@ class Widget(QWidget):
         self.affine_matrix[2][3] = self.sl_translate_x.value()
         self.viewer.layers["0"].affine = self.affine_matrix
         print(self.viewer.layers["0"].extent)
-        print(self.viewer.layers["0"].corner_pixels)
+        print(self.viewer.layers["0"].corner_pixels["data"][0][2])
+        print(self.viewer.layers["0"].corner_pixels["step"][2])
 
     def translate_y_value_changed(self):
         self.affine_matrix[1][3] = self.sl_translate_y.value()
@@ -124,4 +125,25 @@ class Widget(QWidget):
         return
 
     def calculate_affine(self):
+        # rot_mat_x = np.array(
+        #     [
+        #         [np.cos(self.rotation_x), np.sin(self.rotation_x), 0],
+        #         [-np.sin(self.rotation_x), np.cos(self.rotation_x), 0],
+        #         [0, 0, 1],
+        #     ]
+        # )
+        # rot_mat_y = np.array(
+        #     [
+        #         [np.cos(self.rotation_y), 0, np.sin(self.rotation_y)],
+        #         [0, 1, 0],
+        #         [-np.sin(self.rotation_y), 0, np.cos(self.rotation_y)],
+        #     ]
+        # )
+        # rot_mat_z = np.array(
+        #     [
+        #         [1, 0, 0],
+        #         [0, np.cos(self.rotation_z), np.sin(self.rotation_z)],
+        #         [0, -np.sin(self.rotation_z), np.cos(self.rotation_z)],
+        #     ]
+        # )
         return
