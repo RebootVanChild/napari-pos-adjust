@@ -34,6 +34,9 @@ class ExampleQWidget(QWidget):
         print("napari has", len(self.viewer.layers), "layers")
         print("test")
         print("layer translate:", self.viewer.layers["0"].translate)
+        translate_val = self.viewer.layers["0"].translate
+        translate_val[2] += 1
+        self.viewer.layers["0"].translate = translate_val
 
 
 @magic_factory
