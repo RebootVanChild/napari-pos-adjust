@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QHBoxLayout, QSlider, QWidget
+from qtpy.QtWidgets import QFormLayout, QSlider, QWidget
 
 if TYPE_CHECKING:
     pass
@@ -48,11 +48,15 @@ class Widget(QWidget):
         self.sl_translate_z.setValue(0)
         self.sl_translate_z.valueChanged.connect(self.z_value_changed)
 
-        self.setLayout(QHBoxLayout())
+        layout = QFormLayout()
+        layout.addRow("translate x:", self.sl_translate_x)
+        layout.addRow("translate y:", self.sl_translate_y)
+        layout.addRow("translate z:", self.sl_translate_z)
+        self.setLayout(QFormLayout())
         # self.layout().addWidget(self.btn)
-        self.layout().addWidget(self.sl_translate_x)
-        self.layout().addWidget(self.sl_translate_y)
-        self.layout().addWidget(self.sl_translate_z)
+        # self.layout().addWidget(self.sl_translate_x)
+        # self.layout().addWidget(self.sl_translate_y)
+        # self.layout().addWidget(self.sl_translate_z)
 
     # def _on_click(self):
     #     print("napari has", len(self.viewer.layers), "layers")
