@@ -154,7 +154,11 @@ class Widget(QWidget):
             -rot_mat.dot(self.image_center.T)
             + self.image_center.T
             + np.array(
-                [self.sl_translate_z, self.sl_translate_y, self.sl_translate_x]
+                [
+                    [self.sl_translate_z],
+                    [self.sl_translate_y],
+                    [self.sl_translate_x],
+                ]
             )
         )
         self.affine_matrix = np.append(
