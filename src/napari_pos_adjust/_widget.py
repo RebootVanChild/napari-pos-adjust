@@ -24,9 +24,9 @@ class Widget(QWidget):
     affine_matrix = np.array(
         [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
     )
-    translate_x = 0
-    translate_y = 0
-    translate_z = 0
+    translation_x = 0
+    translation_y = 0
+    translation_z = 0
     rotation_x = 0
     rotation_y = 0
     rotation_z = 0
@@ -99,15 +99,15 @@ class Widget(QWidget):
     #     self.viewer.layers["0"].translate = translate_val
 
     def translate_x_value_changed(self):
-        self.translate_x = self.sl_translate_x.value()
+        self.translation_x = self.sl_translate_x.value()
         self.calculate_and_set_affine()
 
     def translate_y_value_changed(self):
-        self.translate_y = self.sl_translate_y.value()
+        self.translation_y = self.sl_translate_y.value()
         self.calculate_and_set_affine()
 
     def translate_z_value_changed(self):
-        self.translate_z = self.sl_translate_z.value()
+        self.translation_z = self.sl_translate_z.value()
         self.calculate_and_set_affine()
 
     def rotate_x_value_changed(self):
@@ -155,9 +155,9 @@ class Widget(QWidget):
             + self.image_center.T
             + np.array(
                 [
-                    [self.sl_translate_z],
-                    [self.sl_translate_y],
-                    [self.sl_translate_x],
+                    [self.translation_z],
+                    [self.translation_y],
+                    [self.translation_x],
                 ]
             )
         )
