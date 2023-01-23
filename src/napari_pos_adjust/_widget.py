@@ -124,7 +124,7 @@ class Widget(QWidget):
 
     def calculate_and_set_affine(self):
         self.image_center = (
-            np.array(self.viewer.layers["0"].extent[0])
+            np.array(self.viewer.layers["0"].extent[0][1])
             * np.array(self.viewer.layers["0"].extent[2])
             / 2
         )
