@@ -30,6 +30,7 @@ class Widget(QWidget):
     rotation_x = 0
     rotation_y = 0
     rotation_z = 0
+    image_center = np.array([0, 0, 0])
 
     def __init__(self, napari_viewer):
         super().__init__()
@@ -98,51 +99,65 @@ class Widget(QWidget):
     #     self.viewer.layers["0"].translate = translate_val
 
     def translate_x_value_changed(self):
-        self.affine_matrix[2][3] = self.sl_translate_x.value()
-        self.viewer.layers["0"].affine = self.affine_matrix
-        print(self.viewer.layers["0"].extent[0][1][2])
-        print(self.viewer.layers["0"].extent[2][2])
+        self.translate_x = self.sl_translate_x.value()
+        self.calculate_and_set_affine()
 
     def translate_y_value_changed(self):
-        self.affine_matrix[1][3] = self.sl_translate_y.value()
-        self.viewer.layers["0"].affine = self.affine_matrix
+        self.translate_y = self.sl_translate_y.value()
+        self.calculate_and_set_affine()
 
     def translate_z_value_changed(self):
-        self.affine_matrix[0][3] = self.sl_translate_z.value()
-        self.viewer.layers["0"].affine = self.affine_matrix
+        self.translate_z = self.sl_translate_z.value()
+        self.calculate_and_set_affine()
 
     def rotate_x_value_changed(self):
-        # TODO
-        return
+        self.rotation_x = np.deg2rad(self.sl_rotate_x.value())
+        self.calculate_and_set_affine()
 
     def rotate_y_value_changed(self):
-        # TODO
-        return
+        self.rotation_y = np.deg2rad(self.sl_rotate_y.value())
+        self.calculate_and_set_affine()
 
     def rotate_z_value_changed(self):
-        # TODO
-        return
+        self.rotation_z = np.deg2rad(self.sl_rotate_z.value())
+        self.calculate_and_set_affine()
 
-    def calculate_affine(self):
-        # rot_mat_x = np.array(
-        #     [
-        #         [np.cos(self.rotation_x), np.sin(self.rotation_x), 0],
-        #         [-np.sin(self.rotation_x), np.cos(self.rotation_x), 0],
-        #         [0, 0, 1],
-        #     ]
-        # )
-        # rot_mat_y = np.array(
-        #     [
-        #         [np.cos(self.rotation_y), 0, np.sin(self.rotation_y)],
-        #         [0, 1, 0],
-        #         [-np.sin(self.rotation_y), 0, np.cos(self.rotation_y)],
-        #     ]
-        # )
-        # rot_mat_z = np.array(
-        #     [
-        #         [1, 0, 0],
-        #         [0, np.cos(self.rotation_z), np.sin(self.rotation_z)],
-        #         [0, -np.sin(self.rotation_z), np.cos(self.rotation_z)],
-        #     ]
-        # )
-        return
+    def calculate_and_set_affine(self):
+        self.image_center = (
+            np.array(self.viewer.layers["0"].extent[0])
+            * np.array(self.viewer.layers["0"].extent[2])
+            / 2
+        )
+        rot_mat_x = np.array(
+            [
+                [np.cos(self.rotation_x), np.sin(self.rotation_x), 0],
+                [-np.sin(self.rotation_x), np.cos(self.rotation_x), 0],
+                [0, 0, 1],
+            ]
+        )
+        rot_mat_y = np.array(
+            [
+                [np.cos(self.rotation_y), 0, np.sin(self.rotation_y)],
+                [0, 1, 0],
+                [-np.sin(self.rotation_y), 0, np.cos(self.rotation_y)],
+            ]
+        )
+        rot_mat_z = np.array(
+            [
+                [1, 0, 0],
+                [0, np.cos(self.rotation_z), np.sin(self.rotation_z)],
+                [0, -np.sin(self.rotation_z), np.cos(self.rotation_z)],
+            ]
+        )
+        rot_mat = rot_mat_x.dot(rot_mat_y).dot(rot_mat_z)
+        translate_arr = (
+            -rot_mat.dot(self.image_center.T)
+            + self.image_center.T
+            + np.array(
+                [self.sl_translate_z, self.sl_translate_y, self.sl_translate_x]
+            )
+        )
+        self.affine_matrix = np.append(
+            np.hstack((rot_mat, translate_arr)), [[0, 0, 0, 1]]
+        )
+        self.viewer.layers["0"].affine = self.affine_matrix
