@@ -158,6 +158,6 @@ class Widget(QWidget):
             )
         )
         self.affine_matrix = np.append(
-            np.hstack((rot_mat, translate_arr)), [[0, 0, 0, 1]]
+            np.hstack((rot_mat, translate_arr)), [[0, 0, 0, 1]], axis=0
         )
         self.viewer.layers["0"].affine = self.affine_matrix
