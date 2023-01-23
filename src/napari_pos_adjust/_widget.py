@@ -48,6 +48,7 @@ class ExampleQWidget(QWidget):
         self.viewer.layers["0"].translate = translate_val
 
     def value_changed(self):
+        print("value changed", self.sl_translate_x.value())
         self.viewer.layers["0"].translate[0] = self.sl_translate_x.value()
         # if self.timer_id != -1:
         #     self.killTimer(self.timer_id)
