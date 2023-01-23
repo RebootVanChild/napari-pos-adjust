@@ -25,17 +25,19 @@ class ExampleQWidget(QWidget):
         super().__init__()
         self.viewer = napari_viewer
 
-        btn = QPushButton("Click me!")
-        btn.clicked.connect(self._on_click)
+        self.btn = QPushButton("Click me!")
+        self.btn.clicked.connect(self._on_click)
 
-        sl = QSlider(Qt.Horizontal)
-        sl.setMinimum(10)
-        sl.setMaximum(30)
-        sl.setValue(20)
+        self.btn.clicked.connect(self._on_click)
+        self.sl_translate_x = QSlider(Qt.Horizontal)
+        self.sl_translate_x.setMinimum(10)
+        self.sl_translate_x.setMaximum(30)
+        self.sl_translate_x.setValue(20)
+        self.sl_translate_x.valueChanged.connect(self.value_changed)
 
         self.setLayout(QHBoxLayout())
-        self.layout().addWidget(btn)
-        self.layout().addWidget(sl)
+        self.layout().addWidget(self.btn)
+        self.layout().addWidget(self.sl_translate_x)
 
     def _on_click(self):
         print("napari has", len(self.viewer.layers), "layers")
@@ -44,6 +46,13 @@ class ExampleQWidget(QWidget):
         translate_val = self.viewer.layers["0"].translate
         translate_val[2] += 1
         self.viewer.layers["0"].translate = translate_val
+
+    def value_changed(self):
+        self.viewer.layers["0"].translate[0] = self.sl_translate_x.value()
+        # if self.timer_id != -1:
+        #     self.killTimer(self.timer_id)
+        #
+        # self.timer_id = self.startTimer(3000)
 
 
 @magic_factory
