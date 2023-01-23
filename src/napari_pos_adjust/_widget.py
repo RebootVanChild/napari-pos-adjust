@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     pass
 
 
-class ExampleQWidget(QWidget):
+class Widget(QWidget):
     # your QWidget.__init__ can optionally request the napari viewer instance
     # in one of two ways:
     # 1. use a parameter called `napari_viewer`, as done here

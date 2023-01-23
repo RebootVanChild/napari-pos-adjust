@@ -12,8 +12,8 @@ contributions:
       python_name: napari_pos_adjust._writer:write_single_image
       title: Save image data with Napari Pos Adjust
     - id: napari-pos-adjust.make_qwidget
-      python_name: napari_pos_adjust._widget:ExampleQWidget
-      title: Make example QWidget
+      python_name: napari_pos_adjust._widget:Widget
+      title: Make Widget
   readers:
     - command: napari-pos-adjust.get_reader
       accepts_directories: false
@@ -27,4 +27,4 @@ contributions:
       filename_extensions: ['.npy']
   widgets:
     - command: napari-pos-adjust.make_qwidget
-      display_name: Example QWidget
+      display_name: Pos Adjust
