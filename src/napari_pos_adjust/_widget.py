@@ -51,6 +51,8 @@ class Widget(QWidget):
         self.setLayout(QHBoxLayout())
         # self.layout().addWidget(self.btn)
         self.layout().addWidget(self.sl_translate_x)
+        self.layout().addWidget(self.sl_translate_y)
+        self.layout().addWidget(self.sl_translate_z)
 
     # def _on_click(self):
     #     print("napari has", len(self.viewer.layers), "layers")
