@@ -37,6 +37,16 @@ class Widget(QWidget):
         self.sl_translate_x.setMaximum(5000)
         self.sl_translate_x.setValue(0)
         self.sl_translate_x.valueChanged.connect(self.x_value_changed)
+        self.sl_translate_y = QSlider(Qt.Horizontal)
+        self.sl_translate_y.setMinimum(-5000)
+        self.sl_translate_y.setMaximum(5000)
+        self.sl_translate_y.setValue(0)
+        self.sl_translate_y.valueChanged.connect(self.y_value_changed)
+        self.sl_translate_z = QSlider(Qt.Horizontal)
+        self.sl_translate_z.setMinimum(-2500)
+        self.sl_translate_z.setMaximum(2500)
+        self.sl_translate_z.setValue(0)
+        self.sl_translate_z.valueChanged.connect(self.z_value_changed)
 
         self.setLayout(QHBoxLayout())
         # self.layout().addWidget(self.btn)
@@ -52,6 +62,18 @@ class Widget(QWidget):
 
     def x_value_changed(self):
         self.affine_matrix[2][3] = self.sl_translate_x.value()
+        # self.viewer.layers["0"].translate =
+        # [0, 0, self.sl_translate_x.value()]
+        self.viewer.layers["0"].affine = self.affine_matrix
+
+    def y_value_changed(self):
+        self.affine_matrix[1][3] = self.sl_translate_y.value()
+        # self.viewer.layers["0"].translate =
+        # [0, 0, self.sl_translate_x.value()]
+        self.viewer.layers["0"].affine = self.affine_matrix
+
+    def z_value_changed(self):
+        self.affine_matrix[0][3] = self.sl_translate_z.value()
         # self.viewer.layers["0"].translate =
         # [0, 0, self.sl_translate_x.value()]
         self.viewer.layers["0"].affine = self.affine_matrix
