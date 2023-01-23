@@ -37,7 +37,7 @@ class Widget(QWidget):
         self.sl_translate_x.valueChanged.connect(self.x_value_changed)
 
         self.setLayout(QHBoxLayout())
-        self.layout().addWidget(self.btn)
+        # self.layout().addWidget(self.btn)
         self.layout().addWidget(self.sl_translate_x)
 
     # def _on_click(self):
