@@ -157,15 +157,7 @@ class Widget(QWidget):
                 [self.translation_z, self.translation_y, self.translation_x]
             ).T
         )
-        print(-rot_mat.dot(self.image_center.T))
-        print(self.image_center.T)
-        print(
-            np.array(
-                [self.translation_z, self.translation_y, self.translation_x]
-            ).T
-        )
-        print(translate_arr)
         self.affine_matrix = np.append(
-            np.hstack((rot_mat, translate_arr)), [[0, 0, 0, 1]], axis=0
+            np.hstack((rot_mat, [translate_arr].T)), [[0, 0, 0, 1]], axis=0
         )
         self.viewer.layers["0"].affine = self.affine_matrix
