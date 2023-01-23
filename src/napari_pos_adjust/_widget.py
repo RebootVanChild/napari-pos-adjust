@@ -17,10 +17,6 @@ if TYPE_CHECKING:
 
 
 class Widget(QWidget):
-    # your QWidget.__init__ can optionally request the napari viewer instance
-    # in one of two ways:
-    # 1. use a parameter called `napari_viewer`, as done here
-    # 2. use a type annotation of 'napari.viewer.Viewer' for any parameter
     affine_matrix = np.array(
         [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
     )
@@ -35,9 +31,6 @@ class Widget(QWidget):
     def __init__(self, napari_viewer):
         super().__init__()
         self.viewer = napari_viewer
-        # buttons
-        # self.btn = QPushButton("Click me!")
-        # self.btn.clicked.connect(self._on_click)
         # Translation sliders
         self.sl_translate_x = QSlider(Qt.Horizontal)
         self.sl_translate_x.setMinimum(-5000)
@@ -85,18 +78,6 @@ class Widget(QWidget):
         layout.addRow("rotate y:", self.sl_rotate_y)
         layout.addRow("rotate z:", self.sl_rotate_z)
         self.setLayout(layout)
-        # self.layout().addWidget(self.btn)
-        # self.layout().addWidget(self.sl_translate_x)
-        # self.layout().addWidget(self.sl_translate_y)
-        # self.layout().addWidget(self.sl_translate_z)
-
-    # def _on_click(self):
-    #     print("napari has", len(self.viewer.layers), "layers")
-    #     print("test")
-    #     print("layer translate:", self.viewer.layers["0"].translate)
-    #     translate_val = self.viewer.layers["0"].translate
-    #     translate_val[2] = 1000
-    #     self.viewer.layers["0"].translate = translate_val
 
     def translate_x_value_changed(self):
         self.translation_x = self.sl_translate_x.value()
