@@ -21,7 +21,9 @@ class Widget(QWidget):
     # in one of two ways:
     # 1. use a parameter called `napari_viewer`, as done here
     # 2. use a type annotation of 'napari.viewer.Viewer' for any parameter
-    affine_matrix = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1]])
+    affine_matrix = np.array(
+        [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    )
 
     def __init__(self, napari_viewer):
         super().__init__()
