@@ -8,8 +8,9 @@ Replace code below according to your needs.
 """
 from typing import TYPE_CHECKING
 
+import numpy as np
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QHBoxLayout, QPushButton, QSlider, QWidget
+from qtpy.QtWidgets import QHBoxLayout, QSlider, QWidget
 
 if TYPE_CHECKING:
     pass
@@ -20,35 +21,35 @@ class Widget(QWidget):
     # in one of two ways:
     # 1. use a parameter called `napari_viewer`, as done here
     # 2. use a type annotation of 'napari.viewer.Viewer' for any parameter
+    affine_matrix = np.array([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 1]])
+
     def __init__(self, napari_viewer):
         super().__init__()
         self.viewer = napari_viewer
-
-        self.btn = QPushButton("Click me!")
-        self.btn.clicked.connect(self._on_click)
-
+        # buttons
+        # self.btn = QPushButton("Click me!")
+        # self.btn.clicked.connect(self._on_click)
+        # Translation sliders
         self.sl_translate_x = QSlider(Qt.Horizontal)
         self.sl_translate_x.setMinimum(-5000)
         self.sl_translate_x.setMaximum(5000)
         self.sl_translate_x.setValue(0)
-        self.sl_translate_x.valueChanged.connect(self.value_changed)
+        self.sl_translate_x.valueChanged.connect(self.x_value_changed)
 
         self.setLayout(QHBoxLayout())
         self.layout().addWidget(self.btn)
         self.layout().addWidget(self.sl_translate_x)
 
-    def _on_click(self):
-        print("napari has", len(self.viewer.layers), "layers")
-        print("test")
-        print("layer translate:", self.viewer.layers["0"].translate)
-        translate_val = self.viewer.layers["0"].translate
-        translate_val[2] = 1000
-        self.viewer.layers["0"].translate = translate_val
+    # def _on_click(self):
+    #     print("napari has", len(self.viewer.layers), "layers")
+    #     print("test")
+    #     print("layer translate:", self.viewer.layers["0"].translate)
+    #     translate_val = self.viewer.layers["0"].translate
+    #     translate_val[2] = 1000
+    #     self.viewer.layers["0"].translate = translate_val
 
-    def value_changed(self):
-        print("value changed", self.sl_translate_x.value())
-        self.viewer.layers["0"].translate = [0, 0, self.sl_translate_x.value()]
-        # if self.timer_id != -1:
-        #     self.killTimer(self.timer_id)
-        #
-        # self.timer_id = self.startTimer(3000)
+    def x_value_changed(self):
+        self.affine_matrix[2][3] = self.sl_translate_x.value()
+        # self.viewer.layers["0"].translate =
+        # [0, 0, self.sl_translate_x.value()]
+        self.viewer.layers["0"].affine = self.affine_matrix
