@@ -9,7 +9,8 @@ Replace code below according to your needs.
 from typing import TYPE_CHECKING
 
 from magicgui import magic_factory
-from qtpy.QtWidgets import QHBoxLayout, QPushButton, QWidget
+from qtpy.QtCore import Qt
+from qtpy.QtWidgets import QHBoxLayout, QPushButton, QSlider, QWidget
 
 if TYPE_CHECKING:
     import napari
@@ -27,8 +28,14 @@ class ExampleQWidget(QWidget):
         btn = QPushButton("Click me!")
         btn.clicked.connect(self._on_click)
 
+        sl = QSlider(Qt.Horizontal)
+        sl.setMinimum(10)
+        sl.setMaximum(30)
+        sl.setValue(20)
+
         self.setLayout(QHBoxLayout())
         self.layout().addWidget(btn)
+        self.layout().addWidget(sl)
 
     def _on_click(self):
         print("napari has", len(self.viewer.layers), "layers")
