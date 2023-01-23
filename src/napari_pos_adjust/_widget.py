@@ -30,8 +30,8 @@ class ExampleQWidget(QWidget):
 
         self.btn.clicked.connect(self._on_click)
         self.sl_translate_x = QSlider(Qt.Horizontal)
-        self.sl_translate_x.setMinimum(-100)
-        self.sl_translate_x.setMaximum(100)
+        self.sl_translate_x.setMinimum(-1000)
+        self.sl_translate_x.setMaximum(1000)
         self.sl_translate_x.setValue(0)
         self.sl_translate_x.valueChanged.connect(self.value_changed)
 
