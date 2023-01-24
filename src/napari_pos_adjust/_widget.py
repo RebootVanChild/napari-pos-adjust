@@ -17,16 +17,27 @@ if TYPE_CHECKING:
 
 
 class Widget(QWidget):
-    affine_matrix = np.array(
-        [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
-    )
-    translation_x = 0
-    translation_y = 0
-    translation_z = 0
-    rotation_x = 0
-    rotation_y = 0
-    rotation_z = 0
-    image_center = np.array([0, 0, 0])
+    tissue_block_names = ["A1", "A2", "A3", "A4"]
+    # the selected tissue block's index now
+    current_tissue_block_index = 0
+    # each parameter is a array of size 4 (blocks)
+    affine_matrix = [
+        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
+        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
+        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
+        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
+    ]
+    translation_x = [0, 0, 0, 0]
+    translation_y = [0, 0, 0, 0]
+    translation_z = [0, 0, 0, 0]
+    rotation_x = [0, 0, 0, 0]
+    rotation_y = [0, 0, 0, 0]
+    rotation_z = [0, 0, 0, 0]
+    # image_center = [
+    # np.array([0, 0, 0]),
+    # np.array([0, 0, 0]),
+    # np.array([0, 0, 0]),
+    # np.array([0, 0, 0])]
 
     def __init__(self, napari_viewer):
         super().__init__()
@@ -36,7 +47,7 @@ class Widget(QWidget):
         # self.btn.clicked.connect(self.btn_clicked)
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
-        self.cb_tissue_block.addItems(["A1", "A2", "A3", "A4"])
+        self.cb_tissue_block.addItems(self.tissue_block_names)
         self.cb_tissue_block.currentIndexChanged.connect(
             self.tissue_block_selection_changed
         )
@@ -95,70 +106,139 @@ class Widget(QWidget):
     #     self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
 
     def tissue_block_selection_changed(self, index):
-        print(index, self.cb_tissue_block.currentText())
+        self.current_tissue_block_index = index
+        self.sl_translate_x.setValue(
+            self.translation_x[self.current_tissue_block_index]
+        )
+        self.sl_translate_y.setValue(
+            self.translation_y[self.current_tissue_block_index]
+        )
+        self.sl_translate_z.setValue(
+            self.translation_z[self.current_tissue_block_index]
+        )
+        self.sl_rotate_x.setValue(
+            self.rotation_x[self.current_tissue_block_index]
+        )
+        self.sl_rotate_y.setValue(
+            self.rotation_y[self.current_tissue_block_index]
+        )
+        self.sl_rotate_z.setValue(
+            self.rotation_z[self.current_tissue_block_index]
+        )
 
     def translate_x_value_changed(self):
-        self.translation_x = self.sl_translate_x.value()
+        self.translation_x[
+            self.current_tissue_block_index
+        ] = self.sl_translate_x.value()
         self.calculate_and_set_affine()
 
     def translate_y_value_changed(self):
-        self.translation_y = self.sl_translate_y.value()
+        self.translation_y[
+            self.current_tissue_block_index
+        ] = self.sl_translate_y.value()
         self.calculate_and_set_affine()
 
     def translate_z_value_changed(self):
-        self.translation_z = self.sl_translate_z.value()
+        self.translation_z[
+            self.current_tissue_block_index
+        ] = self.sl_translate_z.value()
         self.calculate_and_set_affine()
 
     def rotate_x_value_changed(self):
-        self.rotation_x = np.deg2rad(self.sl_rotate_x.value())
+        self.rotation_x[self.current_tissue_block_index] = np.deg2rad(
+            self.sl_rotate_x.value()
+        )
         self.calculate_and_set_affine()
 
     def rotate_y_value_changed(self):
-        self.rotation_y = np.deg2rad(self.sl_rotate_y.value())
+        self.rotation_y[self.current_tissue_block_index] = np.deg2rad(
+            self.sl_rotate_y.value()
+        )
         self.calculate_and_set_affine()
 
     def rotate_z_value_changed(self):
-        self.rotation_z = np.deg2rad(self.sl_rotate_z.value())
+        self.rotation_z[self.current_tissue_block_index] = np.deg2rad(
+            self.sl_rotate_z.value()
+        )
         self.calculate_and_set_affine()
 
     def calculate_and_set_affine(self):
-        self.image_center = (
-            np.array(self.viewer.layers["0"].extent[0][1])
-            * np.array(self.viewer.layers["0"].extent[2])
+        # get dimensions and pixel size to find center (in microns)
+        image_center = (
+            np.array(
+                self.viewer.layers[
+                    self.tissue_block_names[self.current_tissue_block_index]
+                ].extent[0][1]
+            )
+            * np.array(
+                self.viewer.layers[
+                    self.tissue_block_names[self.current_tissue_block_index]
+                ].extent[2]
+            )
             / 2
         )
         rot_mat_x = np.array(
             [
-                [np.cos(self.rotation_x), np.sin(self.rotation_x), 0],
-                [-np.sin(self.rotation_x), np.cos(self.rotation_x), 0],
+                [
+                    np.cos(self.rotation_x[self.current_tissue_block_index]),
+                    np.sin(self.rotation_x[self.current_tissue_block_index]),
+                    0,
+                ],
+                [
+                    -np.sin(self.rotation_x[self.current_tissue_block_index]),
+                    np.cos(self.rotation_x[self.current_tissue_block_index]),
+                    0,
+                ],
                 [0, 0, 1],
             ]
         )
         rot_mat_y = np.array(
             [
-                [np.cos(self.rotation_y), 0, np.sin(self.rotation_y)],
+                [
+                    np.cos(self.rotation_y[self.current_tissue_block_index]),
+                    0,
+                    np.sin(self.rotation_y[self.current_tissue_block_index]),
+                ],
                 [0, 1, 0],
-                [-np.sin(self.rotation_y), 0, np.cos(self.rotation_y)],
+                [
+                    -np.sin(self.rotation_y[self.current_tissue_block_index]),
+                    0,
+                    np.cos(self.rotation_y[self.current_tissue_block_index]),
+                ],
             ]
         )
         rot_mat_z = np.array(
             [
                 [1, 0, 0],
-                [0, np.cos(self.rotation_z), np.sin(self.rotation_z)],
-                [0, -np.sin(self.rotation_z), np.cos(self.rotation_z)],
+                [
+                    0,
+                    np.cos(self.rotation_z[self.current_tissue_block_index]),
+                    np.sin(self.rotation_z[self.current_tissue_block_index]),
+                ],
+                [
+                    0,
+                    -np.sin(self.rotation_z[self.current_tissue_block_index]),
+                    np.cos(self.rotation_z[self.current_tissue_block_index]),
+                ],
             ]
         )
         rot_mat = rot_mat_x.dot(rot_mat_y).dot(rot_mat_z)
         translate_arr = (
-            -rot_mat.dot(self.image_center.T)
-            + self.image_center
+            -rot_mat.dot(image_center.T)
+            + image_center
             + np.array(
-                [self.translation_z, self.translation_y, self.translation_x]
+                [
+                    self.translation_z[self.current_tissue_block_index],
+                    self.translation_y[self.current_tissue_block_index],
+                    self.translation_x[self.current_tissue_block_index],
+                ]
             )
         )
-        self.affine_matrix = np.append(
+        self.affine_matrix[self.current_tissue_block_index] = np.append(
             np.hstack((rot_mat, translate_arr[..., None])),
             [[0, 0, 0, 1]],
             axis=0,
         )
-        self.viewer.layers["0"].affine = self.affine_matrix
+        self.viewer.layers[
+            self.tissue_block_names[self.current_tissue_block_index]
+        ].affine = self.affine_matrix[self.current_tissue_block_index]
