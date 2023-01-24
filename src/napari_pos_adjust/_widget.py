@@ -9,8 +9,9 @@ Replace code below according to your needs.
 from typing import TYPE_CHECKING
 
 import numpy as np
+from aicsimageio import AICSImage
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QFormLayout, QSlider, QWidget
+from qtpy.QtWidgets import QFormLayout, QPushButton, QSlider, QWidget
 
 if TYPE_CHECKING:
     pass
@@ -31,6 +32,10 @@ class Widget(QWidget):
     def __init__(self, napari_viewer):
         super().__init__()
         self.viewer = napari_viewer
+        # botton
+        self.btn = QPushButton()
+        self.btn.clicked.connect(self.btn_clicked)
+
         # Translation sliders
         self.sl_translate_x = QSlider(Qt.Horizontal)
         self.sl_translate_x.setMinimum(-5000)
@@ -71,6 +76,7 @@ class Widget(QWidget):
         self.sl_rotate_z.valueChanged.connect(self.rotate_z_value_changed)
 
         layout = QFormLayout()
+        layout.addRow("test:", self.btn)
         layout.addRow("translate x:", self.sl_translate_x)
         layout.addRow("translate y:", self.sl_translate_y)
         layout.addRow("translate z:", self.sl_translate_z)
@@ -78,6 +84,12 @@ class Widget(QWidget):
         layout.addRow("rotate y:", self.sl_rotate_y)
         layout.addRow("rotate z:", self.sl_rotate_z)
         self.setLayout(layout)
+
+    def btn_clicked(self):
+        img = AICSImage("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
+        self.viewer.add_image(
+            img.get_image_data(), name="0", blending="additive", visible=True
+        )
 
     def translate_x_value_changed(self):
         self.translation_x = self.sl_translate_x.value()
