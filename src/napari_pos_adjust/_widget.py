@@ -10,7 +10,13 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QComboBox, QFormLayout, QSlider, QWidget
+from qtpy.QtWidgets import (
+    QComboBox,
+    QFormLayout,
+    QPushButton,
+    QSlider,
+    QWidget,
+)
 
 if TYPE_CHECKING:
     pass
@@ -43,8 +49,8 @@ class Widget(QWidget):
         super().__init__()
         self.viewer = napari_viewer
         # botton
-        # self.btn = QPushButton()
-        # self.btn.clicked.connect(self.btn_clicked)
+        self.btn_print_affine = QPushButton("print affine matrix", self)
+        self.btn_print_affine.clicked.connect(self.btn_print_affine_clicked)
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
         self.cb_tissue_block.addItems(self.tissue_block_names)
@@ -100,13 +106,22 @@ class Widget(QWidget):
         layout.addRow("rotate x:", self.sl_rotate_x)
         layout.addRow("rotate y:", self.sl_rotate_y)
         layout.addRow("rotate z:", self.sl_rotate_z)
+        layout.addRow("", self.btn_print_affine)
         self.setLayout(layout)
 
-    # def btn_clicked(self):
-    #     self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
+    def btn_print_affine_clicked(self):
+        print(self.affine_matrix)
+        # self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
 
     def tissue_block_selection_changed(self, index):
         self.current_tissue_block_index = index
+        # block signals: not to trigger valueChanged()
+        self.sl_translate_x.blockSignals(True)
+        self.sl_translate_y.blockSignals(True)
+        self.sl_translate_z.blockSignals(True)
+        self.sl_rotate_x.blockSignals(True)
+        self.sl_rotate_y.blockSignals(True)
+        self.sl_rotate_z.blockSignals(True)
         self.sl_translate_x.setValue(
             self.translation_x[self.current_tissue_block_index]
         )
@@ -125,6 +140,12 @@ class Widget(QWidget):
         self.sl_rotate_z.setValue(
             self.rotation_z[self.current_tissue_block_index]
         )
+        self.sl_translate_x.blockSignals(False)
+        self.sl_translate_y.blockSignals(False)
+        self.sl_translate_z.blockSignals(False)
+        self.sl_rotate_x.blockSignals(False)
+        self.sl_rotate_y.blockSignals(False)
+        self.sl_rotate_z.blockSignals(False)
 
     def translate_x_value_changed(self):
         self.translation_x[
