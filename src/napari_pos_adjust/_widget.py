@@ -9,7 +9,6 @@ Replace code below according to your needs.
 from typing import TYPE_CHECKING
 
 import numpy as np
-from aicsimageio import AICSImage
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QFormLayout, QPushButton, QSlider, QWidget
 
@@ -86,10 +85,7 @@ class Widget(QWidget):
         self.setLayout(layout)
 
     def btn_clicked(self):
-        img = AICSImage("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
-        self.viewer.add_image(
-            img.get_image_data(), name="0", blending="additive", visible=True
-        )
+        self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
 
     def translate_x_value_changed(self):
         self.translation_x = self.sl_translate_x.value()
