@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QFormLayout, QPushButton, QSlider, QWidget
+from qtpy.QtWidgets import QComboBox, QFormLayout, QSlider, QWidget
 
 if TYPE_CHECKING:
     pass
@@ -32,8 +32,14 @@ class Widget(QWidget):
         super().__init__()
         self.viewer = napari_viewer
         # botton
-        self.btn = QPushButton()
-        self.btn.clicked.connect(self.btn_clicked)
+        # self.btn = QPushButton()
+        # self.btn.clicked.connect(self.btn_clicked)
+        # Select tissue block to work on
+        self.cb_tissue_block = QComboBox()
+        self.cb_tissue_block.addItems(["A1", "A2", "A3", "A4"])
+        self.cb_tissue_block.currentIndexChanged.connect(
+            self.tissue_block_selection_changed
+        )
 
         # Translation sliders
         self.sl_translate_x = QSlider(Qt.Horizontal)
@@ -75,7 +81,8 @@ class Widget(QWidget):
         self.sl_rotate_z.valueChanged.connect(self.rotate_z_value_changed)
 
         layout = QFormLayout()
-        layout.addRow("test:", self.btn)
+        # layout.addRow("test:", self.btn)
+        layout.addRow("tissue block:", self.cb_tissue_block)
         layout.addRow("translate x:", self.sl_translate_x)
         layout.addRow("translate y:", self.sl_translate_y)
         layout.addRow("translate z:", self.sl_translate_z)
@@ -84,8 +91,11 @@ class Widget(QWidget):
         layout.addRow("rotate z:", self.sl_rotate_z)
         self.setLayout(layout)
 
-    def btn_clicked(self):
-        self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
+    # def btn_clicked(self):
+    #     self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
+
+    def tissue_block_selection_changed(self, index):
+        print(index, self.cb_tissue_block.currentText())
 
     def translate_x_value_changed(self):
         self.translation_x = self.sl_translate_x.value()
