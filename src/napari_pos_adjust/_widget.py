@@ -109,10 +109,6 @@ class Widget(QWidget):
         layout.addRow("", self.btn_print_affine)
         self.setLayout(layout)
 
-    def btn_print_affine_clicked(self):
-        print(self.affine_matrix)
-        # self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
-
     def tissue_block_selection_changed(self, index):
         self.current_tissue_block_index = index
         # block signals: not to trigger valueChanged()
@@ -263,3 +259,7 @@ class Widget(QWidget):
         self.viewer.layers[
             self.tissue_block_names[self.current_tissue_block_index]
         ].affine = self.affine_matrix[self.current_tissue_block_index]
+
+    def btn_print_affine_clicked(self):
+        print(self.affine_matrix[self.current_tissue_block_index])
+        # self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
