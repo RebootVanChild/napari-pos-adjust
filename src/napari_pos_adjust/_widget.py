@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 class Widget(QWidget):
-    tissue_block_names = ["A1", "A2", "A3", "A4"]
+    tissue_block_names = ["A1.czi", "A2.czi", "A3.czi", "A4.czi"]
     # the selected tissue block's index now
     current_tissue_block_index = 0
     # each parameter is a array of size 4 (blocks)
