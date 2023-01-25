@@ -162,21 +162,21 @@ class Widget(QWidget):
         self.calculate_and_set_affine()
 
     def rotate_x_value_changed(self):
-        self.rotation_x[self.current_tissue_block_index] = np.deg2rad(
-            self.sl_rotate_x.value()
-        )
+        self.rotation_x[
+            self.current_tissue_block_index
+        ] = self.sl_rotate_x.value()
         self.calculate_and_set_affine()
 
     def rotate_y_value_changed(self):
-        self.rotation_y[self.current_tissue_block_index] = np.deg2rad(
-            self.sl_rotate_y.value()
-        )
+        self.rotation_y[
+            self.current_tissue_block_index
+        ] = self.sl_rotate_y.value()
         self.calculate_and_set_affine()
 
     def rotate_z_value_changed(self):
-        self.rotation_z[self.current_tissue_block_index] = np.deg2rad(
-            self.sl_rotate_z.value()
-        )
+        self.rotation_z[
+            self.current_tissue_block_index
+        ] = self.sl_rotate_z.value()
         self.calculate_and_set_affine()
 
     def calculate_and_set_affine(self):
@@ -197,13 +197,29 @@ class Widget(QWidget):
         rot_mat_x = np.array(
             [
                 [
-                    np.cos(self.rotation_x[self.current_tissue_block_index]),
-                    np.sin(self.rotation_x[self.current_tissue_block_index]),
+                    np.cos(
+                        np.deg2rad(
+                            self.rotation_x[self.current_tissue_block_index]
+                        )
+                    ),
+                    np.sin(
+                        np.deg2rad(
+                            self.rotation_x[self.current_tissue_block_index]
+                        )
+                    ),
                     0,
                 ],
                 [
-                    -np.sin(self.rotation_x[self.current_tissue_block_index]),
-                    np.cos(self.rotation_x[self.current_tissue_block_index]),
+                    -np.sin(
+                        np.deg2rad(
+                            self.rotation_x[self.current_tissue_block_index]
+                        )
+                    ),
+                    np.cos(
+                        np.deg2rad(
+                            self.rotation_x[self.current_tissue_block_index]
+                        )
+                    ),
                     0,
                 ],
                 [0, 0, 1],
@@ -212,15 +228,31 @@ class Widget(QWidget):
         rot_mat_y = np.array(
             [
                 [
-                    np.cos(self.rotation_y[self.current_tissue_block_index]),
+                    np.cos(
+                        np.deg2rad(
+                            self.rotation_y[self.current_tissue_block_index]
+                        )
+                    ),
                     0,
-                    np.sin(self.rotation_y[self.current_tissue_block_index]),
+                    np.sin(
+                        np.deg2rad(
+                            self.rotation_y[self.current_tissue_block_index]
+                        )
+                    ),
                 ],
                 [0, 1, 0],
                 [
-                    -np.sin(self.rotation_y[self.current_tissue_block_index]),
+                    -np.sin(
+                        np.deg2rad(
+                            self.rotation_y[self.current_tissue_block_index]
+                        )
+                    ),
                     0,
-                    np.cos(self.rotation_y[self.current_tissue_block_index]),
+                    np.cos(
+                        np.deg2rad(
+                            self.rotation_y[self.current_tissue_block_index]
+                        )
+                    ),
                 ],
             ]
         )
@@ -229,13 +261,29 @@ class Widget(QWidget):
                 [1, 0, 0],
                 [
                     0,
-                    np.cos(self.rotation_z[self.current_tissue_block_index]),
-                    np.sin(self.rotation_z[self.current_tissue_block_index]),
+                    np.cos(
+                        np.deg2rad(
+                            self.rotation_z[self.current_tissue_block_index]
+                        )
+                    ),
+                    np.sin(
+                        np.deg2rad(
+                            self.rotation_z[self.current_tissue_block_index]
+                        )
+                    ),
                 ],
                 [
                     0,
-                    -np.sin(self.rotation_z[self.current_tissue_block_index]),
-                    np.cos(self.rotation_z[self.current_tissue_block_index]),
+                    -np.sin(
+                        np.deg2rad(
+                            self.rotation_z[self.current_tissue_block_index]
+                        )
+                    ),
+                    np.cos(
+                        np.deg2rad(
+                            self.rotation_z[self.current_tissue_block_index]
+                        )
+                    ),
                 ],
             ]
         )
