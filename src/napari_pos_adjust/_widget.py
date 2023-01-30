@@ -107,9 +107,13 @@ class Widget(QWidget):
         self.sl_rotate_z.valueChanged.connect(self.rotate_z_value_changed)
 
         layout = QFormLayout()
-        layout.addRow(self.tb_trans_file_path, self.btn_browse_trans_file)
-        layout.addRow(self.btn_apply_trans_file)
         layout.addRow("tissue block:", self.cb_tissue_block)
+        layout.addRow(
+            "load transformation:",
+            self.tb_trans_file_path,
+            self.btn_browse_trans_file,
+        )
+        layout.addRow(self.btn_apply_trans_file)
         layout.addRow("translate x:", self.sl_translate_x)
         layout.addRow("translate y:", self.sl_translate_y)
         layout.addRow("translate z:", self.sl_translate_z)
