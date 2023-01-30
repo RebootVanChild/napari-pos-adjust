@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 
 import napari.layers
 import numpy as np
+from magicgui.widgets import create_widget
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
     QComboBox,
@@ -59,7 +60,7 @@ class Widget(QWidget):
         self.btn_apply_trans_file = QPushButton("apply", self)
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
-        self.cb_tissue_block.addItems(napari.layers.Labels)
+        self.cb_tissue_block.addItems(self.tissue_block_names)
         self.cb_tissue_block.currentIndexChanged.connect(
             self.tissue_block_selection_changed
         )
@@ -113,6 +114,12 @@ class Widget(QWidget):
         hbox_load_file = QHBoxLayout()
         hbox_load_file.addWidget(self.tb_trans_file_path)
         hbox_load_file.addWidget(self.btn_browse_trans_file)
+
+        image_select = create_widget(
+            annotation=napari.layers.Image, label="image_layer"
+        )
+        hbox_load_file.addWidget(image_select.native)
+
         layout.addRow(hbox_load_file)
         layout.addRow(self.btn_apply_trans_file)
         layout.addRow("translate x:", self.sl_translate_x)
