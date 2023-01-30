@@ -14,6 +14,9 @@ contributions:
     - id: napari-pos-adjust.make_qwidget
       python_name: napari_pos_adjust._widget:Widget
       title: Make Widget
+    - id: napari-pos-adjust.make_magic_widget
+      python_name: napari-pos-adjust._widget:example_magic_widget
+      title: Make example magic widget
   readers:
     - command: napari-pos-adjust.get_reader
       accepts_directories: false
@@ -28,5 +31,5 @@ contributions:
   widgets:
     - command: napari-pos-adjust.make_qwidget
       display_name: Pos Adjust
-    - command: napari-align-3d.make_magic_widget
+    - command: napari-pos-adjust.make_magic_widget
       display_name: Landmark-based Registration
