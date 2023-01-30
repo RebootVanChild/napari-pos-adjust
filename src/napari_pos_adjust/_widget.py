@@ -56,17 +56,17 @@ class Widget(QWidget):
         self.btn_browse_trans_file = QPushButton("browse", self)
         # transformation file apply button
         self.btn_apply_trans_file = QPushButton("apply", self)
+        # Select tissue block to work on
+        self.cb_tissue_block = QComboBox()
+        self.cb_tissue_block.addItems(self.viewer.layers)
+        self.cb_tissue_block.currentIndexChanged.connect(
+            self.tissue_block_selection_changed
+        )
         # button save transformation to file
         self.btn_print_affine = QPushButton(
             "save transformation to file", self
         )
         self.btn_print_affine.clicked.connect(self.btn_print_affine_clicked)
-        # Select tissue block to work on
-        self.cb_tissue_block = QComboBox()
-        self.cb_tissue_block.addItems(self.tissue_block_names)
-        self.cb_tissue_block.currentIndexChanged.connect(
-            self.tissue_block_selection_changed
-        )
 
         # Translation sliders
         self.sl_translate_x = QSlider(Qt.Horizontal)
