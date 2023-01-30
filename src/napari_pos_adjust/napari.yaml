@@ -15,7 +15,7 @@ contributions:
       python_name: napari_pos_adjust._widget:Widget
       title: Make Widget
     - id: napari-pos-adjust.make_magic_widget
-      python_name: napari-pos-adjust._widget:example_magic_widget
+      python_name: napari_pos_adjust._widget:example_magic_widget
       title: Make example magic widget
   readers:
     - command: napari-pos-adjust.get_reader
