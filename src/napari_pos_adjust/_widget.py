@@ -13,6 +13,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
     QComboBox,
     QFormLayout,
+    QHBoxLayout,
     QLineEdit,
     QPushButton,
     QSlider,
@@ -108,11 +109,10 @@ class Widget(QWidget):
 
         layout = QFormLayout()
         layout.addRow("tissue block:", self.cb_tissue_block)
-        layout.addRow(
-            "load transformation:",
-            self.tb_trans_file_path,
-            self.btn_browse_trans_file,
-        )
+        hbox_load_file = QHBoxLayout()
+        hbox_load_file.addWidget(self.tb_trans_file_path)
+        hbox_load_file.addWidget(self.btn_browse_trans_file)
+        layout.addRow(hbox_load_file)
         layout.addRow(self.btn_apply_trans_file)
         layout.addRow("translate x:", self.sl_translate_x)
         layout.addRow("translate y:", self.sl_translate_y)
