@@ -58,7 +58,7 @@ class Widget(QWidget):
         self.btn_apply_trans_file = QPushButton("apply", self)
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
-        self.cb_tissue_block.addItems(self.viewer.layers)
+        self.cb_tissue_block.addItems(self.viewer.layers.name)
         self.cb_tissue_block.currentIndexChanged.connect(
             self.tissue_block_selection_changed
         )
