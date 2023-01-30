@@ -13,6 +13,7 @@ from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
     QComboBox,
     QFormLayout,
+    QLineEdit,
     QPushButton,
     QSlider,
     QWidget,
@@ -48,8 +49,16 @@ class Widget(QWidget):
     def __init__(self, napari_viewer):
         super().__init__()
         self.viewer = napari_viewer
-        # botton
-        self.btn_print_affine = QPushButton("print affine matrix", self)
+        # transformation file path text box
+        self.tb_trans_file_path = QLineEdit(self)
+        # transformation file browse button
+        self.btn_browse_trans_file = QPushButton("browse", self)
+        # transformation file apply button
+        self.btn_apply_trans_file = QPushButton("apply", self)
+        # button save transformation to file
+        self.btn_print_affine = QPushButton(
+            "save transformation to file", self
+        )
         self.btn_print_affine.clicked.connect(self.btn_print_affine_clicked)
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
@@ -98,7 +107,8 @@ class Widget(QWidget):
         self.sl_rotate_z.valueChanged.connect(self.rotate_z_value_changed)
 
         layout = QFormLayout()
-        # layout.addRow("test:", self.btn)
+        layout.addRow(self.tb_trans_file_path, self.btn_browse_trans_file)
+        layout.addRow(self.btn_apply_trans_file)
         layout.addRow("tissue block:", self.cb_tissue_block)
         layout.addRow("translate x:", self.sl_translate_x)
         layout.addRow("translate y:", self.sl_translate_y)
@@ -106,7 +116,7 @@ class Widget(QWidget):
         layout.addRow("rotate x:", self.sl_rotate_x)
         layout.addRow("rotate y:", self.sl_rotate_y)
         layout.addRow("rotate z:", self.sl_rotate_z)
-        layout.addRow("", self.btn_print_affine)
+        layout.addRow(self.btn_print_affine)
         self.setLayout(layout)
 
     def tissue_block_selection_changed(self, index):
