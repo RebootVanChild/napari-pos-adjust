@@ -340,11 +340,15 @@ class Widget(QWidget):
         info = self.tissue_block_dict[self.cb_tissue_block.currentText()]
         text = (
             str(info["translation"][0])
+            + ","
             + str(info["translation"][1])
+            + ","
             + str(info["translation"][2])
             + "\n"
             + str(info["rotation"][0])
+            + ","
             + str(info["rotation"][1])
+            + ","
             + str(info["rotation"][2])
         )
         file.write(text)
