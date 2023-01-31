@@ -394,3 +394,4 @@ class Widget(QWidget):
         self.tissue_block_dict[self.cb_tissue_block.currentText()][
             "rotation"
         ] = transform_parameters[1]
+        self.calculate_and_set_affine()
