@@ -11,7 +11,6 @@ from typing import TYPE_CHECKING, Sequence
 
 import napari.layers
 import numpy as np
-from aicsimageio import AICSImage, readers
 from magicgui import magic_factory
 from magicgui.widgets import create_widget
 from napari import Viewer
@@ -435,109 +434,22 @@ def GetAffineMatrixFromLandmarks(
 
 @magic_factory(
     call_button="register",
-    source_img_file={
-        "label": "source image",
-        "filter": "*.czi",
-        "tooltip": "Select the source image",
-    },
-    target_img_file={
-        "label": "target image",
-        "filter": "*.czi",
-        "tooltip": "Select the target image",
-    },
-    landmarks_file={
-        "label": "landmarks",
+    transformation_file={
+        "label": "transformation file",
         "filter": "*.csv",
-        "tooltip": "Select the landmarks file",
+        "tooltip": "Select the transformation file",
     },
-    transformation_type={
-        "choices": [
-            "affine",
-            "rigid body",
-        ],
-        "tooltip": "Select a transformation type",
-    },
-    image_channels={
-        "choices": [
-            "all channels",
-            "channel 0",
-            "channel 1",
-            "channel 2",
-            "channel 3",
-        ],
-        "tooltip": "Select channels to visualize",
+    translate_x_slider={
+        "widget_type": "FloatSlider",
+        "min": -5000,
+        "max": 5000,
     },
 )
 def example_magic_widget(
     viewer: Viewer,
-    source_img_file: Sequence[Path],
-    target_img_file: Sequence[Path],
-    landmarks_file: Sequence[Path],
-    transformation_type: str = "affine",
-    image_channels: str = "all channels",
+    img: "napari.layers.Image",
+    transformation_file: Sequence[Path],
+    translate_x_slider=0,
 ):
-    source_img_path = str(source_img_file[0])
-    target_img_path = str(target_img_file[0])
-    landmarks_path = str(landmarks_file[0])
-    # load images and landmarks
-    source_img = AICSImage(source_img_path, reader=readers.BioformatsReader)
-    target_img = AICSImage(target_img_path, reader=readers.BioformatsReader)
-    landmarks = np.loadtxt(
-        landmarks_path,
-        delimiter=",",
-        converters=lambda x: float(eval(x)),
-        usecols=range(2, 8),
-    )
-    source_pts = landmarks[:, 0:3]
-    target_pts = landmarks[:, 3:6]
-    # load physical pixel sizes (microns per pixel in Z Y X)
-    physical_pixel_sizes_source = source_img.physical_pixel_sizes
-    physical_pixel_sizes_target = target_img.physical_pixel_sizes
-    # calculate Napari input matrix
-    if transformation_type == "affine":
-        napari_input_matrix = Matrix_to_napari_affine_input(
-            GetAffineMatrixFromLandmarks(source_pts, target_pts),
-            physical_pixel_sizes_source,
-            physical_pixel_sizes_target,
-        )
-    elif transformation_type == "rigid body":
-        napari_input_matrix = Matrix_to_napari_affine_input(
-            GetRigidMatrixFromLandmarks(source_pts, target_pts),
-            physical_pixel_sizes_source,
-            physical_pixel_sizes_target,
-        )
-    print("transformation in ZYX order:\n", napari_input_matrix)
-    if image_channels == "all channels":
-        viewer.add_image(
-            source_img.data,
-            channel_axis=1,
-            name=["source_C0", "source_C1", "source_C2", "source_C3"],
-            affine=napari_input_matrix,
-            blending="additive",
-            visible=True,
-        )
-        viewer.add_image(
-            target_img.data,
-            channel_axis=1,
-            name=["target_C0", "target_C1", "target_C2", "target_C3"],
-            blending="additive",
-            visible=True,
-        )
-    else:
-        channel_idx_char = image_channels[-1]
-        viewer.add_image(
-            source_img.get_image_data("ZYX", C=int(channel_idx_char)),
-            name="source_C" + channel_idx_char,
-            affine=napari_input_matrix,
-            colormap="red",
-            blending="additive",
-            visible=True,
-        )
-        viewer.add_image(
-            target_img.get_image_data("ZYX", C=int(channel_idx_char)),
-            name="target_C" + channel_idx_char,
-            colormap="green",
-            blending="additive",
-            visible=True,
-        )
-    viewer.dims.ndisplay = 3
+    transformation_file_path = str(transformation_file[0])
+    print(transformation_file_path)
