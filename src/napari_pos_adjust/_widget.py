@@ -433,6 +433,7 @@ def GetAffineMatrixFromLandmarks(
 
 
 @magic_factory(
+    call_button="btn1",
     transformation_file={
         "label": "transformation file",
         "filter": "*.csv",
@@ -443,17 +444,13 @@ def GetAffineMatrixFromLandmarks(
         "min": -5000,
         "max": 5000,
     },
-    btn=dict(
-        widget_type="PushButton",
-        text="apply",
-        tooltip="apply the transformation to image",
-    ),
 )
 def example_magic_widget(
     viewer: Viewer,
     img: "napari.layers.Image",
     transformation_file: Sequence[Path],
     translate_x_slider=0,
+    extra_button=dict(widget_type="PushButton"),
 ):
     transformation_file_path = str(transformation_file[0])
     print(transformation_file_path)
