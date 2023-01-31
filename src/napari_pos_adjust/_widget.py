@@ -53,8 +53,10 @@ class Widget(QWidget):
     def __init__(self, napari_viewer):
         super().__init__()
         self.viewer = napari_viewer
+        print("sss")
         print(self.viewer.layers)
-        print(napari.layers)
+        print("bbb")
+        print(napari.layers.Image)
         # transformation file path text box
         self.tb_trans_file_path = QLineEdit(self)
         # transformation file browse button
