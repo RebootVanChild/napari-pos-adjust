@@ -443,7 +443,7 @@ def GetAffineMatrixFromLandmarks(
         "min": -5000,
         "max": 5000,
     },
-    btn={"widget_type": "PushButton", "name": "button"},
+    btn={"widget_type": "PushButton", "value": False, "name": "button"},
 )
 def example_magic_widget(
     viewer: Viewer,
