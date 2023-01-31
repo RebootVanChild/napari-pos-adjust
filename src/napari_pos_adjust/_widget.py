@@ -33,6 +33,9 @@ class Widget(QWidget):
         self.viewer = napari_viewer
         # transformation file path text box
         self.tb_trans_file_path = QLineEdit(self)
+        self.tb_trans_file_path.textChanged.connect(
+            self.trans_file_path_changed
+        )
         # transformation file browse button
         self.btn_browse_trans_file = QPushButton("browse", self)
         self.btn_browse_trans_file.clicked.connect(
@@ -40,6 +43,9 @@ class Widget(QWidget):
         )
         # transformation file apply button
         self.btn_apply_trans_file = QPushButton("apply", self)
+        self.btn_apply_trans_file.clicked.connect(
+            self.apply_transformation_from_file
+        )
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
         self.cb_tissue_block.currentTextChanged.connect(
@@ -100,8 +106,8 @@ class Widget(QWidget):
                 )
                 * np.array(self.viewer.layers[x.name].extent[2])
                 / 2,
-                "translation": [0, 0, 0],
-                "rotation": [0, 0, 0],
+                "translation": np.array([0, 0, 0]),
+                "rotation": np.array([0, 0, 0]),
             }
             self.cb_tissue_block.addItem(x.name)
 
@@ -367,7 +373,24 @@ class Widget(QWidget):
         fileName, _ = QFileDialog.getOpenFileName(
             self, "Load Transformation", "", "CSV Files (*.csv)"
         )
+        self.tb_trans_file_path.setText(fileName)
+
+    def trans_file_path_changed(self, text):
         self.tissue_block_dict[self.cb_tissue_block.currentText()][
             "transformation_file_path"
-        ] = fileName
-        self.tb_trans_file_path.setText(fileName)
+        ] = text
+
+    def apply_transformation_from_file(self):
+        transform_parameters = np.loadtxt(
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "transformation_file_path"
+            ],
+            delimiter=",",
+            converters=lambda x: float(eval(x)),
+        )
+        self.tissue_block_dict[self.cb_tissue_block.currentText()][
+            "translation"
+        ] = transform_parameters[0]
+        self.tissue_block_dict[self.cb_tissue_block.currentText()][
+            "rotation"
+        ] = transform_parameters[1]
