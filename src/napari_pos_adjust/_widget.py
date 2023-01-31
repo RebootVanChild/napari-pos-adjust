@@ -8,8 +8,6 @@ Replace code below according to your needs.
 """
 from typing import TYPE_CHECKING
 
-import napari
-import napari.layers
 import numpy as np
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
@@ -53,10 +51,8 @@ class Widget(QWidget):
     def __init__(self, napari_viewer):
         super().__init__()
         self.viewer = napari_viewer
-        print("sss")
-        print(self.viewer.layers)
-        print("bbb")
-        print(napari.layers.Image)
+        for x in self.viewer.layers:
+            print(x.name)
         # transformation file path text box
         self.tb_trans_file_path = QLineEdit(self)
         # transformation file browse button
