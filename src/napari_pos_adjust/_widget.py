@@ -35,6 +35,9 @@ class Widget(QWidget):
         self.tb_trans_file_path = QLineEdit(self)
         # transformation file browse button
         self.btn_browse_trans_file = QPushButton("browse", self)
+        self.btn_browse_trans_file.clicked.connect(
+            self.transformation_load_from_file
+        )
         # transformation file apply button
         self.btn_apply_trans_file = QPushButton("apply", self)
         # Select tissue block to work on
@@ -353,3 +356,10 @@ class Widget(QWidget):
         )
         file.write(text)
         file.close()
+
+    def transformation_load_from_file(self):
+        fileName, _ = QFileDialog.getOpenFileName(
+            self, "Load Transformation", "", "CSV Files (*.csv)"
+        )
+        if fileName:
+            print(fileName)
