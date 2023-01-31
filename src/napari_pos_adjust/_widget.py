@@ -109,13 +109,13 @@ class Widget(QWidget):
         self.sl_rotate_z.setValue(0)
         self.sl_rotate_z.valueChanged.connect(self.rotate_z_value_changed)
 
-        image_select = create_widget(
+        self.image_select = create_widget(
             annotation=napari.layers.Image, label="image_layer"
         )
 
         layout = QFormLayout()
         hbox_layer_select = QHBoxLayout()
-        hbox_layer_select.addWidget(image_select.native)
+        hbox_layer_select.addWidget(self.image_select.native)
         hbox_load_file = QHBoxLayout()
         hbox_load_file.addWidget(self.tb_trans_file_path)
         hbox_load_file.addWidget(self.btn_browse_trans_file)
@@ -332,4 +332,5 @@ class Widget(QWidget):
 
     def btn_print_affine_clicked(self):
         print(self.affine_matrix[self.current_tissue_block_index])
+        print(self.image_select)
         # self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
