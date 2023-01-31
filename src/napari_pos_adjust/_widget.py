@@ -49,7 +49,7 @@ class Widget(QWidget):
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
         self.cb_tissue_block.currentTextChanged.connect(
-            self.tissue_block_selection_changed
+            self.update_widget_info
         )
         # button save transformation to file
         self.btn_save_transformation = QPushButton(
@@ -127,7 +127,7 @@ class Widget(QWidget):
         layout.addRow(self.btn_save_transformation)
         self.setLayout(layout)
 
-    def tissue_block_selection_changed(self, name):
+    def update_widget_info(self):
         self.tb_trans_file_path.setText(
             self.tissue_block_dict[self.cb_tissue_block.currentText()][
                 "transformation_file_path"
@@ -141,17 +141,35 @@ class Widget(QWidget):
         self.sl_rotate_y.blockSignals(True)
         self.sl_rotate_z.blockSignals(True)
         self.sl_translate_x.setValue(
-            self.tissue_block_dict[name]["translation"][0]
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "translation"
+            ][0]
         )
         self.sl_translate_y.setValue(
-            self.tissue_block_dict[name]["translation"][1]
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "translation"
+            ][1]
         )
         self.sl_translate_z.setValue(
-            self.tissue_block_dict[name]["translation"][2]
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "translation"
+            ][2]
         )
-        self.sl_rotate_x.setValue(self.tissue_block_dict[name]["rotation"][0])
-        self.sl_rotate_y.setValue(self.tissue_block_dict[name]["rotation"][1])
-        self.sl_rotate_z.setValue(self.tissue_block_dict[name]["rotation"][2])
+        self.sl_rotate_x.setValue(
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "rotation"
+            ][0]
+        )
+        self.sl_rotate_y.setValue(
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "rotation"
+            ][1]
+        )
+        self.sl_rotate_z.setValue(
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "rotation"
+            ][2]
+        )
         self.sl_translate_x.blockSignals(False)
         self.sl_translate_y.blockSignals(False)
         self.sl_translate_z.blockSignals(False)
@@ -395,4 +413,5 @@ class Widget(QWidget):
         self.tissue_block_dict[self.cb_tissue_block.currentText()][
             "rotation"
         ] = transform_parameters[1]
+        self.update_widget_info()
         self.calculate_and_set_affine()
