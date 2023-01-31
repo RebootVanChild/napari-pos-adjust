@@ -444,13 +444,13 @@ def GetAffineMatrixFromLandmarks(
         "min": -5000,
         "max": 5000,
     },
+    extra_button=dict(widget_type="PushButton"),
 )
 def example_magic_widget(
     viewer: Viewer,
     img: "napari.layers.Image",
     transformation_file: Sequence[Path],
     translate_x_slider=0,
-    extra_button=dict(widget_type="PushButton"),
 ):
     transformation_file_path = str(transformation_file[0])
     print(transformation_file_path)
