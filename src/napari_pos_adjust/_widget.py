@@ -94,6 +94,7 @@ class Widget(QWidget):
 
         for x in self.viewer.layers:
             self.tissue_block_dict[x.name] = {
+                "transformation_file_path": "",
                 "image_center": np.array(
                     self.viewer.layers[x.name].extent[0][1]
                 )
@@ -121,6 +122,11 @@ class Widget(QWidget):
         self.setLayout(layout)
 
     def tissue_block_selection_changed(self, name):
+        self.tb_trans_file_path.setText(
+            self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "transformation_file_path"
+            ]
+        )
         # block signals: not to trigger valueChanged()
         self.sl_translate_x.blockSignals(True)
         self.sl_translate_y.blockSignals(True)
@@ -361,5 +367,7 @@ class Widget(QWidget):
         fileName, _ = QFileDialog.getOpenFileName(
             self, "Load Transformation", "", "CSV Files (*.csv)"
         )
-        if fileName:
-            print(fileName)
+        self.tissue_block_dict[self.cb_tissue_block.currentText()][
+            "transformation_file_path"
+        ] = fileName
+        self.tb_trans_file_path.setText(fileName)
