@@ -333,8 +333,10 @@ class Widget(QWidget):
         ].affine = affine_matrix
 
     def transformation_save_to_file(self):
-        name = QFileDialog.getSaveFileName(self, "Save File")
-        file = open(name, "w")
+        fileName, _ = QFileDialog.getSaveFileName(
+            self, "Save Transformation", "", "CSV Files (*.csv)"
+        )
+        file = open(fileName, "w")
         info = self.tissue_block_dict[self.cb_tissue_block.currentText()]
         text = (
             str(info["translation"][0])
