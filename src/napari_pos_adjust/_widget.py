@@ -12,6 +12,7 @@ import numpy as np
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
     QComboBox,
+    QFileDialog,
     QFormLayout,
     QHBoxLayout,
     QLineEdit,
@@ -42,10 +43,12 @@ class Widget(QWidget):
             self.tissue_block_selection_changed
         )
         # button save transformation to file
-        self.btn_print_affine = QPushButton(
+        self.btn_save_transformation = QPushButton(
             "save transformation to file", self
         )
-        self.btn_print_affine.clicked.connect(self.btn_print_affine_clicked)
+        self.btn_save_transformation.clicked.connect(
+            self.transformation_save_to_file
+        )
 
         # Translation sliders
         self.sl_translate_x = QSlider(Qt.Horizontal)
@@ -111,7 +114,7 @@ class Widget(QWidget):
         layout.addRow("rotate x:", self.sl_rotate_x)
         layout.addRow("rotate y:", self.sl_rotate_y)
         layout.addRow("rotate z:", self.sl_rotate_z)
-        layout.addRow(self.btn_print_affine)
+        layout.addRow(self.btn_save_transformation)
         self.setLayout(layout)
 
     def tissue_block_selection_changed(self, name):
@@ -329,7 +332,18 @@ class Widget(QWidget):
             self.cb_tissue_block.currentText()
         ].affine = affine_matrix
 
-    def btn_print_affine_clicked(self):
-        print(self.affine_matrix[self.current_tissue_block_index])
-        print(self.image_select)
-        # self.viewer.open("F:/HT442PI/visualization/442PI-A1-5x-small.czi")
+    def transformation_save_to_file(self):
+        name = QFileDialog.getSaveFileName(self, "Save File")
+        file = open(name, "w")
+        info = self.tissue_block_dict[self.cb_tissue_block.currentText()]
+        text = (
+            str(info["translation"][0])
+            + str(info["translation"][1])
+            + str(info["translation"][2])
+            + "\n"
+            + str(info["rotation"][0])
+            + str(info["rotation"][1])
+            + str(info["rotation"][2])
+        )
+        file.write(text)
+        file.close()
