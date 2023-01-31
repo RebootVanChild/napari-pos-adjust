@@ -46,6 +46,7 @@ class Widget(QWidget):
     rotation_x = [0, 0, 0, 0]
     rotation_y = [0, 0, 0, 0]
     rotation_z = [0, 0, 0, 0]
+
     # image_center = [
     # np.array([0, 0, 0]),
     # np.array([0, 0, 0]),
@@ -444,7 +445,9 @@ def GetAffineMatrixFromLandmarks(
         "min": -5000,
         "max": 5000,
     },
-    extra_button=dict(widget_type="PushButton"),
+    extra_button={
+        "widget_type": "PushButton",
+    },
 )
 def example_magic_widget(
     viewer: Viewer,
