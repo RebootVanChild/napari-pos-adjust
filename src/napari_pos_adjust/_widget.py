@@ -25,34 +25,11 @@ if TYPE_CHECKING:
 
 
 class Widget(QWidget):
-    tissue_block_names = ["A1.czi", "A2.czi", "A3.czi", "A4.czi"]
-    # the selected tissue block's index now
-    current_tissue_block_index = 0
-    # each parameter is a array of size 4 (blocks)
-    affine_matrix = [
-        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
-        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
-        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
-        np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
-    ]
-    translation_x = [0, 0, 0, 0]
-    translation_y = [0, 0, 0, 0]
-    translation_z = [0, 0, 0, 0]
-    rotation_x = [0, 0, 0, 0]
-    rotation_y = [0, 0, 0, 0]
-    rotation_z = [0, 0, 0, 0]
-
-    # image_center = [
-    # np.array([0, 0, 0]),
-    # np.array([0, 0, 0]),
-    # np.array([0, 0, 0]),
-    # np.array([0, 0, 0])]
+    tissue_block_dict = {}
 
     def __init__(self, napari_viewer):
         super().__init__()
         self.viewer = napari_viewer
-        for x in self.viewer.layers:
-            print(x.name)
         # transformation file path text box
         self.tb_trans_file_path = QLineEdit(self)
         # transformation file browse button
@@ -61,8 +38,7 @@ class Widget(QWidget):
         self.btn_apply_trans_file = QPushButton("apply", self)
         # Select tissue block to work on
         self.cb_tissue_block = QComboBox()
-        self.cb_tissue_block.addItems(self.tissue_block_names)
-        self.cb_tissue_block.currentIndexChanged.connect(
+        self.cb_tissue_block.currentTextChanged.connect(
             self.tissue_block_selection_changed
         )
         # button save transformation to file
@@ -110,18 +86,23 @@ class Widget(QWidget):
         self.sl_rotate_z.setValue(0)
         self.sl_rotate_z.valueChanged.connect(self.rotate_z_value_changed)
 
-        # self.image_select = create_widget(
-        #     annotation=napari.layers.Image, label="image_layer"
-        # )
+        for x in self.viewer.layers:
+            self.cb_tissue_block.addItem(x.name)
+            self.tissue_block_dict[x.name] = {
+                "image_center": np.array(
+                    self.viewer.layers[x.name].extent[0][1]
+                )
+                * np.array(self.viewer.layers[x.name].extent[2])
+                / 2,
+                "translation": [0, 0, 0],
+                "rotation": [0, 0, 0],
+            }
 
         layout = QFormLayout()
         layout.addRow("tissue block:", self.cb_tissue_block)
-        # hbox_layer_select = QHBoxLayout()
-        # hbox_layer_select.addWidget(self.image_select.native)
         hbox_load_file = QHBoxLayout()
         hbox_load_file.addWidget(self.tb_trans_file_path)
         hbox_load_file.addWidget(self.btn_browse_trans_file)
-        # layout.addRow("tissue block:", hbox_layer_select)
         layout.addRow(hbox_load_file)
         layout.addRow(self.btn_apply_trans_file)
         layout.addRow("translate x:", self.sl_translate_x)
@@ -133,8 +114,7 @@ class Widget(QWidget):
         layout.addRow(self.btn_print_affine)
         self.setLayout(layout)
 
-    def tissue_block_selection_changed(self, index):
-        self.current_tissue_block_index = index
+    def tissue_block_selection_changed(self, name):
         # block signals: not to trigger valueChanged()
         self.sl_translate_x.blockSignals(True)
         self.sl_translate_y.blockSignals(True)
@@ -143,23 +123,17 @@ class Widget(QWidget):
         self.sl_rotate_y.blockSignals(True)
         self.sl_rotate_z.blockSignals(True)
         self.sl_translate_x.setValue(
-            self.translation_x[self.current_tissue_block_index]
+            self.tissue_block_dict[name]["translation"][0]
         )
         self.sl_translate_y.setValue(
-            self.translation_y[self.current_tissue_block_index]
+            self.tissue_block_dict[name]["translation"][1]
         )
         self.sl_translate_z.setValue(
-            self.translation_z[self.current_tissue_block_index]
+            self.tissue_block_dict[name]["translation"][2]
         )
-        self.sl_rotate_x.setValue(
-            self.rotation_x[self.current_tissue_block_index]
-        )
-        self.sl_rotate_y.setValue(
-            self.rotation_y[self.current_tissue_block_index]
-        )
-        self.sl_rotate_z.setValue(
-            self.rotation_z[self.current_tissue_block_index]
-        )
+        self.sl_rotate_x.setValue(self.tissue_block_dict[name]["rotation"][0])
+        self.sl_rotate_y.setValue(self.tissue_block_dict[name]["rotation"][1])
+        self.sl_rotate_z.setValue(self.tissue_block_dict[name]["rotation"][2])
         self.sl_translate_x.blockSignals(False)
         self.sl_translate_y.blockSignals(False)
         self.sl_translate_z.blockSignals(False)
@@ -168,67 +142,58 @@ class Widget(QWidget):
         self.sl_rotate_z.blockSignals(False)
 
     def translate_x_value_changed(self):
-        self.translation_x[
-            self.current_tissue_block_index
-        ] = self.sl_translate_x.value()
+        self.tissue_block_dict[self.cb_tissue_block.currentText()][
+            "translation"
+        ][0] = self.sl_translate_x.value()
         self.calculate_and_set_affine()
 
     def translate_y_value_changed(self):
-        self.translation_y[
-            self.current_tissue_block_index
-        ] = self.sl_translate_y.value()
+        self.tissue_block_dict[self.cb_tissue_block.currentText()][
+            "translation"
+        ][1] = self.sl_translate_y.value()
         self.calculate_and_set_affine()
 
     def translate_z_value_changed(self):
-        self.translation_z[
-            self.current_tissue_block_index
-        ] = self.sl_translate_z.value()
+        self.tissue_block_dict[self.cb_tissue_block.currentText()][
+            "translation"
+        ][2] = self.sl_translate_z.value()
         self.calculate_and_set_affine()
 
     def rotate_x_value_changed(self):
-        self.rotation_x[
-            self.current_tissue_block_index
+        self.tissue_block_dict[self.cb_tissue_block.currentText()]["rotation"][
+            0
         ] = self.sl_rotate_x.value()
         self.calculate_and_set_affine()
 
     def rotate_y_value_changed(self):
-        self.rotation_y[
-            self.current_tissue_block_index
+        self.tissue_block_dict[self.cb_tissue_block.currentText()]["rotation"][
+            1
         ] = self.sl_rotate_y.value()
         self.calculate_and_set_affine()
 
     def rotate_z_value_changed(self):
-        self.rotation_z[
-            self.current_tissue_block_index
+        self.tissue_block_dict[self.cb_tissue_block.currentText()]["rotation"][
+            2
         ] = self.sl_rotate_z.value()
         self.calculate_and_set_affine()
 
     def calculate_and_set_affine(self):
         # get dimensions and pixel size to find center (in microns)
-        image_center = (
-            np.array(
-                self.viewer.layers[
-                    self.tissue_block_names[self.current_tissue_block_index]
-                ].extent[0][1]
-            )
-            * np.array(
-                self.viewer.layers[
-                    self.tissue_block_names[self.current_tissue_block_index]
-                ].extent[2]
-            )
-            / 2
-        )
         rot_mat_x = np.array(
             [
                 [
                     np.cos(
                         np.deg2rad(
-                            self.rotation_x[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][0]
                         )
                     ),
                     np.sin(
                         np.deg2rad(
-                            self.rotation_x[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][0]
                         )
                     ),
                     0,
@@ -236,12 +201,16 @@ class Widget(QWidget):
                 [
                     -np.sin(
                         np.deg2rad(
-                            self.rotation_x[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][0]
                         )
                     ),
                     np.cos(
                         np.deg2rad(
-                            self.rotation_x[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][0]
                         )
                     ),
                     0,
@@ -254,13 +223,17 @@ class Widget(QWidget):
                 [
                     np.cos(
                         np.deg2rad(
-                            self.rotation_y[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][1]
                         )
                     ),
                     0,
                     np.sin(
                         np.deg2rad(
-                            self.rotation_y[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][1]
                         )
                     ),
                 ],
@@ -268,13 +241,17 @@ class Widget(QWidget):
                 [
                     -np.sin(
                         np.deg2rad(
-                            self.rotation_y[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][1]
                         )
                     ),
                     0,
                     np.cos(
                         np.deg2rad(
-                            self.rotation_y[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][1]
                         )
                     ),
                 ],
@@ -287,12 +264,16 @@ class Widget(QWidget):
                     0,
                     np.cos(
                         np.deg2rad(
-                            self.rotation_z[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][2]
                         )
                     ),
                     np.sin(
                         np.deg2rad(
-                            self.rotation_z[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][2]
                         )
                     ),
                 ],
@@ -300,12 +281,16 @@ class Widget(QWidget):
                     0,
                     -np.sin(
                         np.deg2rad(
-                            self.rotation_z[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][2]
                         )
                     ),
                     np.cos(
                         np.deg2rad(
-                            self.rotation_z[self.current_tissue_block_index]
+                            self.tissue_block_dict[
+                                self.cb_tissue_block.currentText()
+                            ]["rotation"][2]
                         )
                     ),
                 ],
@@ -313,24 +298,36 @@ class Widget(QWidget):
         )
         rot_mat = rot_mat_x.dot(rot_mat_y).dot(rot_mat_z)
         translate_arr = (
-            -rot_mat.dot(image_center.T)
-            + image_center
+            -rot_mat.dot(
+                self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                    "image_center"
+                ].T
+            )
+            + self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                "image_center"
+            ]
             + np.array(
                 [
-                    self.translation_z[self.current_tissue_block_index],
-                    self.translation_y[self.current_tissue_block_index],
-                    self.translation_x[self.current_tissue_block_index],
+                    self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                        "translation"
+                    ][2],
+                    self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                        "translation"
+                    ][1],
+                    self.tissue_block_dict[self.cb_tissue_block.currentText()][
+                        "translation"
+                    ][0],
                 ]
             )
         )
-        self.affine_matrix[self.current_tissue_block_index] = np.append(
+        affine_matrix = np.append(
             np.hstack((rot_mat, translate_arr[..., None])),
             [[0, 0, 0, 1]],
             axis=0,
         )
         self.viewer.layers[
-            self.tissue_block_names[self.current_tissue_block_index]
-        ].affine = self.affine_matrix[self.current_tissue_block_index]
+            self.cb_tissue_block.currentText()
+        ].affine = affine_matrix
 
     def btn_print_affine_clicked(self):
         print(self.affine_matrix[self.current_tissue_block_index])
