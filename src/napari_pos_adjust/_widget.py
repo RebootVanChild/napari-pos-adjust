@@ -87,7 +87,6 @@ class Widget(QWidget):
         self.sl_rotate_z.valueChanged.connect(self.rotate_z_value_changed)
 
         for x in self.viewer.layers:
-            self.cb_tissue_block.addItem(x.name)
             self.tissue_block_dict[x.name] = {
                 "image_center": np.array(
                     self.viewer.layers[x.name].extent[0][1]
@@ -97,6 +96,7 @@ class Widget(QWidget):
                 "translation": [0, 0, 0],
                 "rotation": [0, 0, 0],
             }
+            self.cb_tissue_block.addItem(x.name)
 
         layout = QFormLayout()
         layout.addRow("tissue block:", self.cb_tissue_block)
