@@ -32,7 +32,7 @@ class Widget(QWidget):
         super().__init__()
         self.viewer = napari_viewer
         # transformation file path text box
-        self.tb_trans_file_path = QLineEdit(self)
+        self.tb_trans_file_path = QLineEdit()
         self.tb_trans_file_path.textChanged.connect(
             self.trans_file_path_changed
         )

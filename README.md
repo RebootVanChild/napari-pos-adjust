@@ -33,6 +33,14 @@ To install latest development version :
 
     pip install git+https://github.com/RebootVanChild/napari-pos-adjust.git
 
+## Usage
+
+Please load in image layers before opening this plugin.<br>
+Use tissue block to select the image layer to operate on.<br>
+Load in previous transformation with "browse" and "apply".<br>
+Drag sliders to adjust translation and rotation.<br>
+Press "save transformation to file" to save it as a csv file.
+
 
 ## Contributing
 
